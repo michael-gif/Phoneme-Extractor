@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RootNamespace>Phoneme_Extractor</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>PhonemeExtractor</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="cmusphinx pocketsphinx-unity-demo master Assets-Pocketsphinx\**" />
+    <EmbeddedResource Remove="cmusphinx pocketsphinx-unity-demo master Assets-Pocketsphinx\**" />
+    <None Remove="cmusphinx pocketsphinx-unity-demo master Assets-Pocketsphinx\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="Vosk" Version="0.3.38" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if $(ConfigurationName) == Release del &quot;bin\Release\net6.0-windows\NAudio.Asio.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Release del &quot;bin\Release\net6.0-windows\NAudio.Midi.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Release del &quot;bin\Release\net6.0-windows\NAudio.Wasapi.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Release del &quot;bin\Release\net6.0-windows\NAudio.WinMM.dll&quot;&#xD;&#xA;if $(ConfigurationName) == Release del &quot;bin\Release\net6.0-windows\PhonemeExtractor.deps.json&quot;&#xD;&#xA;if $(ConfigurationName) == Release del &quot;bin\Release\net6.0-windows\PhonemeExtractor.pdb&quot;" />
+  </Target>
+
+</Project>

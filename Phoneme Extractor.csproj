@@ -8,12 +8,17 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>PhonemeExtractor</AssemblyName>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="cmusphinx pocketsphinx-unity-demo master Assets-Pocketsphinx\**" />
     <EmbeddedResource Remove="cmusphinx pocketsphinx-unity-demo master Assets-Pocketsphinx\**" />
     <None Remove="cmusphinx pocketsphinx-unity-demo master Assets-Pocketsphinx\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="icon.ico" />
   </ItemGroup>
 
   <ItemGroup>

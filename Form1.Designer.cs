@@ -97,9 +97,9 @@
             // panel1
             // 
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 416);
+            panel1.Location = new Point(0, 394);
             panel1.Name = "panel1";
-            panel1.Size = new Size(984, 28);
+            panel1.Size = new Size(984, 50);
             panel1.TabIndex = 3;
             // 
             // Form1

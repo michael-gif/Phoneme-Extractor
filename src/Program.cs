@@ -1,4 +1,4 @@
-namespace Phoneme_Extractor
+namespace Phoneme_Extractor.src
 {
     internal static class Program
     {

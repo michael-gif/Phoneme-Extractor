@@ -118,6 +118,7 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Phoneme Extractor";
+            FormClosed += Form1_FormClosed;
             Resize += Form1_Resize;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();

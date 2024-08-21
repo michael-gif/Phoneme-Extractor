@@ -11,6 +11,7 @@ namespace Phoneme_Extractor
         long totalSampleCount = -1;
         int bytesPerSample = -1;
         string currentlyOpenFilename = "";
+        string tempWavFile = "";
         List<Label> wordLabels = new List<Label>();
         List<Label> phonemeLabels = new List<Label>();
         Dictionary<string, string> cmuDictionary = new Dictionary<string, string>();
@@ -35,7 +36,25 @@ namespace Phoneme_Extractor
             fileDialog.Filter = "Audio Files|*.wav;*.mp3";
             if (fileDialog.ShowDialog() != DialogResult.OK) return;
 
-            WaveFileReader waveFileReader = new WaveFileReader(fileDialog.FileName);
+            switch (Path.GetExtension(fileDialog.FileName))
+            {
+                case ".wav":
+                    currentlyOpenFilename = fileDialog.FileName;
+                    break;
+                case ".mp3":
+                    tempWavFile = Path.GetTempPath() + Path.GetFileNameWithoutExtension(fileDialog.FileName) + ".wav";
+                    Console.WriteLine(tempWavFile);
+                    using (Mp3FileReader mp3 = new Mp3FileReader(fileDialog.FileName))
+                    {
+                        using (WaveStream pcm = WaveFormatConversionStream.CreatePcmStream(mp3))
+                        {
+                            WaveFileWriter.CreateWaveFile(tempWavFile, pcm);
+                        }
+                    }
+                    currentlyOpenFilename = tempWavFile;
+                    break;
+            }
+            WaveFileReader waveFileReader = new WaveFileReader(currentlyOpenFilename);
             totalSampleCount = waveFileReader.SampleCount;
             bytesPerSample = waveFileReader.WaveFormat.BitsPerSample / 8;
             waveViewer1.WaveStream = waveFileReader;
@@ -43,7 +62,6 @@ namespace Phoneme_Extractor
             isFileLoaded = true;
             closeAudioFileToolStripMenuItem.Enabled = true;
             analyzeLoadedFileToolStripMenuItem.Enabled = true;
-            currentlyOpenFilename = fileDialog.FileName;
             waveViewer1.BackColor = Color.White;
         }
 
@@ -74,6 +92,11 @@ namespace Phoneme_Extractor
             RefreshWordLabels();
         }
 
+        /// <summary>
+        /// Zoom in to waveform viewer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void WaveViewer_Scroll(object sender, MouseEventArgs e)
         {
             if (!isFileLoaded) return;
@@ -84,6 +107,11 @@ namespace Phoneme_Extractor
             RefreshWordLabels();
         }
 
+        /// <summary>
+        /// Pan the waveform viewer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
             if (!isFileLoaded) return;
@@ -95,6 +123,25 @@ namespace Phoneme_Extractor
             RefreshWordLabels();
         }
 
+        /// <summary>
+        /// Close the wave stream and delete any temp .wav files
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            closeAudioFileToolStripMenuItem.PerformClick();
+            if (!string.IsNullOrEmpty(tempWavFile)) File.Delete(tempWavFile);
+        }
+
+        /// <summary>
+        /// Read through the "cmudict-0.7b" file line by line, and create entries in cmuDictionary where the key is the
+        /// word and the value is the phonemes for that word as a string.<br/>
+        /// All numbers are removed from the phonemes string
+        /// <br/><br/>
+        /// For example:<br/>
+        /// "abandon  ah0 b ae1 n d ah0 n" becomes { "abandon": "ah b ae n d ah n" }
+        /// </summary>
         private void ReadCMUDictionary()
         {
             string[] lines = File.ReadAllLines("cmudict-0.7b");
@@ -106,6 +153,11 @@ namespace Phoneme_Extractor
             }
         }
 
+        /// <summary>
+        /// Use the Vosk offline speech recognition api to get a transcription for the currently open audio file, then create labels
+        /// for each word that are displayed on the waveform.
+        /// </summary>
+        /// <param name="model"></param>
         public void AudioToWords(Model model)
         {
             VoskRecognizer rec = new VoskRecognizer(model, waveViewer1.WaveStream.WaveFormat.SampleRate);
@@ -123,6 +175,11 @@ namespace Phoneme_Extractor
             CreateWordLabels(rec.FinalResult());
         }
 
+        /// <summary>
+        /// Using the JSON output from the Vosk speech recognition, create labels for each word in the transcription, and place them
+        /// onto the waveform viewer in the gui according to the timestamps of each word
+        /// </summary>
+        /// <param name="wordsJson"></param>
         public void CreateWordLabels(string wordsJson)
         {
             var jsonDocument = JsonDocument.Parse(wordsJson);
@@ -130,6 +187,7 @@ namespace Phoneme_Extractor
             var resultArray = root.GetProperty("result");
             panel1.Controls.Clear();
             wordLabels.Clear();
+            phonemeLabels.Clear();
             foreach (var wordObject in resultArray.EnumerateArray())
             {
                 string wordText = wordObject.GetProperty("word").GetString();
@@ -165,6 +223,9 @@ namespace Phoneme_Extractor
             }
         }
 
+        /// <summary>
+        /// Recalculates labels positions and widths to account for changes in the pan and zoom of the waveform viewer
+        /// </summary>
         public void RefreshWordLabels()
         {
             for (int i = 0; i < wordLabels.Count; i++)

@@ -135,7 +135,7 @@ namespace Phoneme_Extractor
         }
 
         /// <summary>
-        /// Read through the "cmudict-0.7b" file line by line, and create entries in cmuDictionary where the key is the
+        /// Read through the "cmudict-0.7b.txt" file line by line, and create entries in cmuDictionary where the key is the
         /// word and the value is the phonemes for that word as a string.<br/>
         /// All numbers are removed from the phonemes string
         /// <br/><br/>
@@ -144,7 +144,7 @@ namespace Phoneme_Extractor
         /// </summary>
         private void ReadCMUDictionary()
         {
-            string[] lines = File.ReadAllLines("cmudict-0.7b");
+            string[] lines = File.ReadAllLines("cmudict-0.7b.txt");
             foreach (string line in lines)
             {
                 string[] pair = line.Split("  ", 2);

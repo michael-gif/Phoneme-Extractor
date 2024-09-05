@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\NAudio.Asio.dll&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\NAudio.Midi.dll&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\NAudio.Wasapi.dll&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\PhonemeExtractor.deps.json&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\PhonemeExtractor.pdb&quot;&#xD;&#xA;&#xD;&#xA;    robocopy &quot;resources\vosk-model-small-en-us-0.15&quot; &quot;bin\Release\net6.0-windows\vosk-model-small-en-us-0.15&quot; /e&#xD;&#xA;    copy &quot;resources\cmudict-0.7b&quot; &quot;bin\Release\net6.0-windows&quot;&#xD;&#xA;    resources\winrar a -ep1 -r &quot;bin\Release\net6.0-windows\PhonemeExtractor.zip&quot; &quot;bin\Release\net6.0-windows\&quot;&#xD;&#xA;)" />
+    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\NAudio.Asio.dll&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\NAudio.Midi.dll&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\NAudio.Wasapi.dll&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\PhonemeExtractor.deps.json&quot;&#xD;&#xA;    del &quot;bin\Release\net6.0-windows\PhonemeExtractor.pdb&quot;&#xD;&#xA;&#xD;&#xA;    robocopy &quot;resources\vosk-model-small-en-us-0.15&quot; &quot;bin\Release\net6.0-windows\vosk-model-small-en-us-0.15&quot; /e&#xD;&#xA;    copy &quot;resources\cmudict-0.7b.txt&quot; &quot;bin\Release\net6.0-windows&quot;&#xD;&#xA;    resources\winrar a -ep1 -r &quot;bin\Release\net6.0-windows\PhonemeExtractor.zip&quot; &quot;bin\Release\net6.0-windows\&quot;&#xD;&#xA;)" />
   </Target>
 
 </Project>
